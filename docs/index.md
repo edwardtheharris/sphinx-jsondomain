@@ -8,7 +8,6 @@ author: Dave Shawley, Edward Harris
 Please see the readme for an introduction to the project.
 
 ```{toctree}
-:hidden:
 
 examples
 history
