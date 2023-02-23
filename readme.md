@@ -1,3 +1,8 @@
+---
+abstract: This is the readme for the Sphinx JSON Domain extension
+author: Dave Shawley, Edward Harris
+---
+
 # Sphinx JSON Domain
 
 ![https://pypi.python.org/pypi/sphinx-jsondomain](https://img.shields.io/pypi/v/sphinx-jsondomain.svg?maxAge=2592000)
@@ -57,3 +62,11 @@ pipenv shell
    ```rst
    .. json:object:: GitHub
    ```
+
+## Contents
+
+```{toctree}
+
+contributing
+docs/index
+```

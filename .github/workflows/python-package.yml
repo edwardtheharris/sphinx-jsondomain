@@ -24,9 +24,9 @@ jobs:
       uses: actions/setup-python@main
       with:
         python-version: ${{ matrix.python-version }}
-    - run: python${{ matrix.python-version }} -m pip install --upgrade pip
+    - run: python${{ matrix.python-version }} -m pip install --upgrade pip pipenv
     - run: python${{ matrix.python-version }} -m pip install flake8 pytest
-    - run: python${{ matrix.python-version }} -m pip install -e .
+    - run: python${{ matrix.python-version }} -m pipenv --python ${{ matrix.python-version }} install --dev --system
     - run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - run: flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - run: pytest

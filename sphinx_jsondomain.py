@@ -7,6 +7,8 @@ from typing import Tuple
 
 from docutils import nodes
 from docutils.parsers.rst import directives as rst_directives
+from docutils.statemachine import StateWS
+from docutils.statemachine import StateMachineWS
 from sphinx import addnodes
 from sphinx import directives
 from sphinx import domains
@@ -21,6 +23,7 @@ except ImportError:
     yaml = None
 
 
+# pylint: disable=too-many-instance-attributes
 class JSONObject(directives.ObjectDescription):
     """
     Implementation of ``json:object``.
@@ -74,13 +77,26 @@ class JSONObject(directives.ObjectDescription):
     #
     # NB self.domain is required to be the name of the sphinx domain
     # inside of DocFieldTransformer
-    def __init__(self):
+    # pylint: disable=too-many-arguments
+    def __init__(
+            self, name='', arguments='', options='',
+            content='', lineno='', content_offset='', block_text='',
+            state=StateWS(StateMachineWS([StateWS], 'StateWS')),
+            state_machine=StateMachineWS([StateWS], 'StateWS')):
         """Initialize the class."""
         self.names = []
+        self.name = name
         self.domain_obj = ''
+        self.state = state
+        self.options = options
+        self.arguments = arguments
+        self.content = content
+        self.content_offset = content_offset
         super().__init__(
-            name='', arguments='', options='', content='', lineno='',
-            content_offset='', block_text='', state='', state_machine='')
+            name=self.name, arguments=self.arguments, options=self.options,
+            content=self.content, lineno='',
+            content_offset=self.content_offset, block_text='',
+            state=self.state, state_machine=state_machine)
 
     def run(self):
         """
@@ -297,6 +313,7 @@ class JSONDomain(domains.Domain):
             yield (objdef.name, objdef.name, 'object', objdef.docname,
                    objdef.key, 1)
 
+    # pylint: disable=useless-parent-delegation
     def merge_domaindata(self, docnames: List[str], otherdata: Dict) -> None:
         """Merge domain data."""
         return super().merge_domaindata(docnames, otherdata)
@@ -335,11 +352,12 @@ class JSONDomain(domains.Domain):
         the type is ``uri``, then a link to the RFC is generated.
 
         """
-        if node.get('json:name'):
+        try:
             objdef = self.get_object(node['json:name'])
-            if objdef:
-                return_value = node_utils.make_refnode(
-                    builder, fromdocname, objdef.docname, objdef.key, contnode)
+            return_value = node_utils.make_refnode(
+                builder, fromdocname, objdef.docname, objdef.key, contnode)
+        except KeyError:
+            return_value = None
         if typ == 'jsonprop':
             try:
                 ref = nodes.reference(internal=False)
@@ -347,7 +365,7 @@ class JSONDomain(domains.Domain):
                 ref.append(contnode)
                 return_value = ref
             except KeyError:
-                pass
+                return_value = None
         return return_value
 
     def get_object(self, name):
@@ -448,7 +466,7 @@ class PropertyDefinition():
         self.property_options = {}
 
     # pylint: disable=R0912
-    def gather(self, contentnode):
+    def gather(self, contentnode): # noqa
         """
         Gather content.
 
@@ -512,7 +530,7 @@ class PropertyDefinition():
 
         self.property_types[name] = typ
 
-    def generate_sample_data(self, all_objects, fake_factory):
+    def generate_sample_data(self, all_objects, fake_factory): # noqa
         """Generate sample data."""
         sample_data = {}
         for name, typ in self.property_types.items():
@@ -537,7 +555,7 @@ class PropertyDefinition():
                         value = None
 
                 if value is None and typ != 'null':
-                    value = '{'+f'{typ}'+' object}'
+                    value = '{' + f'{typ}' + ' object}'
 
             else:
                 value = '\uFFFD (Unspecified)'

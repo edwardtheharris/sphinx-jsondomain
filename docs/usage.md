@@ -1,64 +1,85 @@
-Usage
-=====
+---
+abstract: This document provides general usage information.
+author: Dave Shawley, Edward Harris
+---
+
+# Usage
+
 Before you can use this extension, you need to install the
 `sphinx-jsondomain <https://pypi.python.org/pypi/sphinx-jsondomain>`_
-Python package and then add the :mod:`sphinxjsondomain` module to
+Python package and then add the :mod:`sphinx_jsondomain` module to
 :data:`extensions` list in your Sphinx configuration file (:file:`conf.py`)::
 
-   extensions = ['sphinxjsondomain']
+```{code-block} python
+:caption: conf.py
+
+extensions = ['sphinx_jsondomain']
+```
 
 Then you can use the :rst:dir:`json:object` directive to document
 your JSON documents.
 
-ReStructuredText Usage
-----------------------
+## ReStructuredText Usage
 
-.. rst:directive:: .. json:object:: Object Name
+```{code-block} rst
+.. rst:directive::
 
-   Documents the structure of a JSON document using the name ``Object Name``.
-   The description is referenceable using the :rst:role:`json:object` role.
-   Each property of the JSON document is described using a separate
+   .. json:object:: Object Name
 
-   **:property** *[type]* *identifier* **:** *description*
-      Documents the property named *identifier*.  The property's type can be
-      specified inline or as a separate ``:proptype:`` option.  The type is
-      shown in the rendered output and linked if the type is something
-      recognizable.  It is also used to generate sample data, if the
-      ``:showexample:`` option is included.
+      Documents the structure of a JSON document using the name ``Object Name``.
+      The description is reference-able using the :rst:role:`json:object` role.
+      Each property of the JSON document is described using a separate
 
-   **:proptype** *identifier* **:** *type*
-      Set's the type of the property named *identifier*.  This is
-      necessary if you are setting the property type to a hyperlinked
-      value (e.g., :rst:role:`json:object` role instance).
 
-   **:showexample:**
-      If this option is specified, then the rendered output will contain
-      a generated example.  The example data is generated using the
-      Python `fake-factory`_ library.  See :ref:`recognized_types` for
-      more details.
+      :property [type] identifier: description
 
-   **:noindex:**
-      Do not include this object in the general index.
+         Documents the property named *identifier*.  The property's type can be
+         specified inline or as a separate ``:proptype:`` option.  The type is
+         shown in the rendered output and linked if the type is something
+         recognizable.  It is also used to generate sample data, if the
+         ``:showexample:`` option is included.
 
-   **:options** *identifier* **:** *option-list*
-      Options are a comma-separated list of values that are rendered in
-      italics after the property's description.  The extension does not
-      interpret the option values in any way.
+      :proptype identifier: type
 
-      .. note::
+         Set's the type of the property named *identifier*.  This is
+         necessary if you are setting the property type to a hyperlinked
+         value (e.g., :rst:role:`json:object` role instance).
 
-         The ``:options:`` option will be used to in the near future
-         to enable additional functionality such as adding constraints
-         when generating a JSON Schema for types.
+      :showexample:
 
+         If this option is specified, then the rendered output will contain
+         a generated example.  The example data is generated using the
+         Python `fake-factory`_ library.  See :ref:`recognized_types` for
+         more details.
+
+      :noindex:
+
+         Do not include this object in the general index.
+
+      :options identifier: option-list
+
+         Options are a comma-separated list of values that are rendered in
+         italics after the property's description.  The extension does not
+         interpret the option values in any way.
+```
+
+```{note}
+
+   The ``:options:`` option will be used to in the near future
+   to enable additional functionality such as adding constraints
+   when generating a JSON Schema for types.
+```
+
+```{code-block} rst
 .. rst:role:: json:object
 
    Links to the named :rst:dir:`json:object` directive.
+```
 
-.. _recognized_types:
+(recognized_types)=
 
-Recognized Types
-----------------
+## Recognized Types
+
 Types are used for two distinct purposes in this extension.  First of all,
 they are linked to appropriate documentation.  Secondly, they are used to
 generate example snippets if the *:showexample:* option is included.
@@ -102,8 +123,8 @@ generate example snippets if the *:showexample:* option is included.
 **user_name** links to the defintion for the Python :class:`str` type.
    Examples are generated using `faker.providers.internet`_.
 
-Example Generation
-------------------
+## Example Generation
+
 As mentioned elsewhere, this extensions uses the `fake-factory`_ library
 to generate sample data.  If the "type" of the property is an attribute
 of a ``faker.Factory`` instance, then the method is called to generate
@@ -116,14 +137,14 @@ the property type to a :rst:role:`json:object` reference, then the
 documented object is included recursively.  Let's look at a simple
 example.
 
-.. code-block:: rst
-   :linenos:
+```{code-block} rst
+:linenos:
 
    .. json:object:: Contact
       :showexample:
 
       :property name preferred_name: contact's preferred name in
-         correspondance
+         correspondence
       :property address: mailing address of contact
       :proptype address: :json:object:`Address`
 
@@ -135,6 +156,7 @@ example.
       :property city city: city name
       :property state_abbr state: abbreviated state name
       :property postalcode zip: postal code for this address
+```
 
 And this is the rendered version.  Pay particular attention to the
 handling of the ``address`` property.  The property type is specified
@@ -143,11 +165,12 @@ JSON object (e.g., ``:json:object`Address``` on line 7).  The extension
 recognizes linked objects and embeds an instance of them in the generated
 example.
 
+```{code-block} rst
 .. json:object:: Contact
    :showexample:
 
    :property name preferred_name: contact's preferred name in
-      correspondance
+      correspondence
    :property address: mailing address of contact
    :proptype address: :json:object:`Address`
 
@@ -159,13 +182,15 @@ example.
    :property city city: city name
    :property state_abbr state: abbreviated state name
    :property postalcode zip: postal code for this address
+```
 
-Index Generation
-----------------
+## Index Generation
+
 :rst:dir:`json:object` directives are added to the general index as
 children of the ``JSON Objects`` entry.  You can inhibit this on a
 directive-by-directive basis by including the ``:noindex:`` option.
 
+```{code-block} rst
 .. _fake-factory: http://fake-factory.readthedocs.io/en/latest/
 .. _faker.providers.date_time: http://fake-factory.readthedocs.io/en/latest
    /providers/faker.providers.date_time.html
@@ -175,3 +200,4 @@ directive-by-directive basis by including the ``:noindex:`` option.
    /providers/faker.providers.misc.html
 .. _faker.providers.python: http://fake-factory.readthedocs.io/en/latest
    /providers/faker.providers.python.html
+```
