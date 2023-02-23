@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 faker = "*"
+myst_parser = "*"
 pyyaml = "*"
 sphinx = "*"
 

@@ -9,11 +9,10 @@ from docutils import nodes
 from docutils.parsers.rst import directives as rst_directives
 from sphinx import addnodes
 from sphinx import directives
-from sphinx import domains
+from sphinx.domain import Domain
 from sphinx import roles
 from sphinx.util import docfields
 from sphinx.util import nodes as node_utils
-import faker
 
 try:
     import yaml
@@ -21,7 +20,7 @@ except ImportError:
     yaml = None
 
 
-class JSONObject(directives.ObjectDescription):
+class SphinxJSONObject(directives.ObjectDescription):
     """
     Implementation of ``json:object``.
 
@@ -401,11 +400,10 @@ class JSONDomain(domains.Domain):
         That is what this method is doing.
 
         """
-        fake_factory = faker.Factory.create()
         for name, language, parent in self.data['examples']:
             props = self.get_object(name)
             sample_data = props.generate_sample_data(self.data['all_objects'],
-                                                     fake_factory)
+                                                     '')
             if language == 'yaml' and yaml is not None:
                 title = 'YAML Example'
                 code_text = yaml.safe_dump(sample_data, indent=4,
@@ -513,31 +511,35 @@ class PropertyDefinition():
         self.property_types[name] = typ
 
     def generate_sample_data(self, all_objects, fake_factory):
-        """Generate sample data."""
+        """Generate sample data.
+
+        :param all_objects: A complete list of JSON objects
+        :param fake_factory: A factory object
+        """
         sample_data = {}
-        for name, typ in self.property_types.items():
-            if typ:
+        for name, property_type in self.property_types.items():
+            if property_type:
                 try:
-                    other = all_objects[typ]
+                    other = all_objects[property_type]
                     value = other.generate_sample_data(all_objects,
                                                        fake_factory)
                 except KeyError:
                     value = None
 
                 if value is None:
-                    if hasattr(fake_factory, typ):
-                        value = getattr(fake_factory, typ)()
-                    elif typ in ('integer', 'int'):
+                    if hasattr(fake_factory, property_type):
+                        value = getattr(fake_factory, property_type)()
+                    elif property_type in ('integer', 'int'):
                         value = fake_factory.pyint()
-                    elif typ in ('string', 'str'):
+                    elif property_type in ('string', 'str'):
                         value = fake_factory.pystr()
-                    elif typ in ('boolean', 'bool'):
+                    elif property_type in ('boolean', 'bool'):
                         value = fake_factory.pybool()
-                    elif typ == 'null':
+                    elif property_type == 'null':
                         value = None
 
-                if value is None and typ != 'null':
-                    value = '{'+f'{typ}'+' object}'
+                if value is None and property_type != 'null':
+                    value = '{' + f'{property_type}' + ' object}'
 
             else:
                 value = '\uFFFD (Unspecified)'
