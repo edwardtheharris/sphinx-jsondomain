@@ -38,6 +38,7 @@ setuptools.setup(
     ],
     description='Describe JSON document structures in sphinx',
     install_requires=[
+        'faker',
         'furo',
         'myst_parser',
         'pyyaml',
