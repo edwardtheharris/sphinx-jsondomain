@@ -1,6 +1,7 @@
 """Add a JSON domain to Sphinx."""
 import json
 import re
+from typing import Dict
 from typing import List
 from typing import Tuple
 
@@ -8,12 +9,11 @@ from docutils import nodes
 from docutils.parsers.rst import directives as rst_directives
 from sphinx import addnodes
 from sphinx import directives
-from sphinx.directives import ObjectDescription
-from sphinx.domains import Domain
-from sphinx.domains import ObjType
+from sphinx import domains
 from sphinx import roles
 from sphinx.util import docfields
 from sphinx.util import nodes as node_utils
+import faker
 
 try:
     import yaml
@@ -21,7 +21,7 @@ except ImportError:
     yaml = None
 
 
-class SphinxJSONObject(ObjectDescription):
+class JSONObject(directives.ObjectDescription):
     """
     Implementation of ``json:object``.
 
@@ -41,29 +41,25 @@ class SphinxJSONObject(ObjectDescription):
 
     """
 
-    #: A list of fields that are implemented
     doc_field_types = [docfields.TypedField('property',
                                             label='Object Properties',
                                             names=('property', 'member'),
                                             rolename='prop',
                                             typerolename='jsonprop',
                                             typenames=('proptype', 'type'))]
+    """A list of fields that are implemented."""
 
-    #: Mapping from supported option to an option processor
     option_spec = {
         'noindex': rst_directives.flag,
         'showexample': rst_directives.unchanged,
     }
+    """Mapping from supported option to an option processor."""
 
-    #: JSONObject directives accept content
     has_content = True
+    """JSONObject directives accept content."""
 
-    # def __init__(self, name='', arguments='', options='', content='', lineno='',
-    #              content_offset='', block_text='', state='', state_machine=''):
-    # """Initialize the class.
-
-    # # Inherited Attribute Notes
-
+    # Inherited Attribute Notes
+    # --------- --------- -----
     # self.name - directive name ... probably `object'
     # self.arguments - pos args as list of strings
     # self.options - mapping of name -> value after passing thru option_spec
@@ -75,15 +71,16 @@ class SphinxJSONObject(ObjectDescription):
     # self.block_text - raw text
     # self.state - `state' which called the directive (?)
     # self.state_machine - `state machine' that controls the state (?)
-
+    #
     # NB self.domain is required to be the name of the sphinx domain
     # inside of DocFieldTransformer
-    # """
-    # self.names = []
-    # self.domain_obj = ''
-    # super().__init__(
-    #     name='', arguments='', options='', content='', lineno='',
-    #     content_offset=self.content_offset, block_text='', state='', state_machine='')
+    def __init__(self):
+        """Initialize the class."""
+        self.names = []
+        self.domain_obj = ''
+        super().__init__(
+            name='', arguments='', options='', content='', lineno='',
+            content_offset='', block_text='', state='', state_machine='')
 
     def run(self):
         """
@@ -93,7 +90,6 @@ class SphinxJSONObject(ObjectDescription):
         single :class:`sphinx.addnodes.desc` element to hold the
         generated docutils tree.  The structure is::
 
-            ```{code-block} xml
             <sphinx.addnodes.desc>
                 <sphinx.addnodes.desc_signature>name
                 <sphinx.addnodes.desc_name>name
@@ -102,12 +98,12 @@ class SphinxJSONObject(ObjectDescription):
                 <sphinx.addnodes.compact_paragraph>
                     <docutils.nodes.strong>"JSON Example"
                     <docutils.nodes.literal_block>{...}
-            ```
 
         The example block is generated when :meth:`JSONDomain.process_doc`
         is called.  We create the ``compact_paragraph`` node, add it to the
         ``desc`` node and tell the Domain instance to populate the
         ``compact_paragraph`` later on.
+
         """
         self.domain, sep, objtype = self.name.partition(':')
         print(sep)
@@ -208,7 +204,7 @@ class JSONXRef(roles.XRefRole):
         return title, normalize_object_name(target)
 
 
-class SphinxJSONDomain(Domain):
+class JSONDomain(domains.Domain):
     """
     Implementation of the JSON domain.
 
@@ -238,10 +234,10 @@ class SphinxJSONDomain(Domain):
     label = 'JSON'
     data_version = 1
     object_types = {
-        'object': ObjType('object', 'object', 'obj'),
+        'object': domains.ObjType('object', 'object', 'obj'),
     }
     directives = {
-        'object': SphinxJSONObject,
+        'object': JSONObject,
     }
     roles = {
         'object': JSONXRef(),
@@ -301,9 +297,9 @@ class SphinxJSONDomain(Domain):
             yield (objdef.name, objdef.name, 'object', objdef.docname,
                    objdef.key, 1)
 
-    # def merge_domaindata(self, docnames: List[str], otherdata: Dict) -> None:
-    #     """Merge domain data."""
-    #     return super().merge_domaindata(docnames, otherdata)
+    def merge_domaindata(self, docnames: List[str], otherdata: Dict) -> None:
+        """Merge domain data."""
+        return super().merge_domaindata(docnames, otherdata)
 
     # pylint: disable=too-many-arguments
     def resolve_any_xref(
@@ -405,10 +401,11 @@ class SphinxJSONDomain(Domain):
         That is what this method is doing.
 
         """
+        fake_factory = faker.Factory.create()
         for name, language, parent in self.data['examples']:
             props = self.get_object(name)
             sample_data = props.generate_sample_data(self.data['all_objects'],
-                                                     '')
+                                                     fake_factory)
             if language == 'yaml' and yaml is not None:
                 title = 'YAML Example'
                 code_text = yaml.safe_dump(sample_data, indent=4,
@@ -515,41 +512,38 @@ class PropertyDefinition():
 
         self.property_types[name] = typ
 
-    # def generate_sample_data(self, all_objects):
-    #     """Generate sample data.
+    def generate_sample_data(self, all_objects, fake_factory):
+        """Generate sample data."""
+        sample_data = {}
+        for name, typ in self.property_types.items():
+            if typ:
+                try:
+                    other = all_objects[typ]
+                    value = other.generate_sample_data(all_objects,
+                                                       fake_factory)
+                except KeyError:
+                    value = None
 
-    #     :param all_objects: A complete list of JSON objects
-    #     :param fake_factory: A factory object
-    #     """
-    #     sample_data = {}
-    #     for name, property_type in self.property_types.items():
-    #         if property_type:
-    #             try:
-    #                 other = all_objects[property_type]
-    #                 value = other.generate_sample_data(all_objects)
-    #             except KeyError:
-    #                 value = None
+                if value is None:
+                    if hasattr(fake_factory, typ):
+                        value = getattr(fake_factory, typ)()
+                    elif typ in ('integer', 'int'):
+                        value = fake_factory.pyint()
+                    elif typ in ('string', 'str'):
+                        value = fake_factory.pystr()
+                    elif typ in ('boolean', 'bool'):
+                        value = fake_factory.pybool()
+                    elif typ == 'null':
+                        value = None
 
-    #             if value is None:
-    #                 if hasattr(fake_factory, property_type):
-    #                     value = getattr(fake_factory, property_type)()
-    #                 elif property_type in ('integer', 'int'):
-    #                     value = fake_factory.pyint()
-    #                 elif property_type in ('string', 'str'):
-    #                     value = fake_factory.pystr()
-    #                 elif property_type in ('boolean', 'bool'):
-    #                     value = fake_factory.pybool()
-    #                 elif property_type == 'null':
-    #                     value = None
+                if value is None and typ != 'null':
+                    value = '{'+f'{typ}'+' object}'
 
-    #             if value is None and property_type != 'null':
-    #                 value = '{' + f'{property_type}' + ' object}'
+            else:
+                value = '\uFFFD (Unspecified)'
+            sample_data[name] = value
 
-    #         else:
-    #             value = '\uFFFD (Unspecified)'
-    #         sample_data[name] = value
-
-    #     return sample_data
+        return sample_data
 
 
 def normalize_object_name(obj_name):
@@ -559,4 +553,4 @@ def normalize_object_name(obj_name):
 
 def setup(app):
     """Set up the extension in the Sphinx app."""
-    app.add_domain(SphinxJSONDomain)
+    app.add_domain(JSONDomain)

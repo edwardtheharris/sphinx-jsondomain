@@ -41,9 +41,7 @@ Each example is preceded by it's ReStructuredText source.
       :proptype user: :json:object:`Github User`
 ```
 
-## Another JSON object directive
-
-```{code-block} rst
+```{eval-rst}
 .. json:object:: Github Issue
    :showexample:
 

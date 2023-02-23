@@ -20,3 +20,4 @@ pytest-cov = "*"
 semver = {ref = "2.13.0", git = "https://github.com/python-semver/python-semver.git"}
 wheel = "*"
 flake8 = "*"
+loguru = "*"
