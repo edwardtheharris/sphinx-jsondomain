@@ -23,6 +23,7 @@ except ImportError:
     yaml = None
 
 
+# pylint: disable=too-many-instance-attributes
 class JSONObject(directives.ObjectDescription):
     """
     Implementation of ``json:object``.
