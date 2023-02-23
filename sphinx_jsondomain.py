@@ -1,7 +1,6 @@
 """Add a JSON domain to Sphinx."""
 import json
 import re
-from typing import Dict
 from typing import List
 from typing import Tuple
 
@@ -49,14 +48,14 @@ class SphinxJSONObject(directives.ObjectDescription):
                                             typenames=('proptype', 'type'))]
     """A list of fields that are implemented."""
 
+    #: Mapping from supported option to an option processor
     option_spec = {
         'noindex': rst_directives.flag,
         'showexample': rst_directives.unchanged,
     }
-    """Mapping from supported option to an option processor."""
 
+    #: JSONObject directives accept content
     has_content = True
-    """JSONObject directives accept content."""
 
     # Inherited Attribute Notes
     # --------- --------- -----
