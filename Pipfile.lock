@@ -154,6 +154,7 @@
             ],
             "index": "pypi",
             "version": "==17.0.0"
+<<<<<<< HEAD
         },
         "furo": {
             "hashes": [
@@ -162,6 +163,8 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==2022.12.7"
+=======
+>>>>>>> e79dbc8447b98f16325fd02d50e398b6023534c5
         },
         "idna": {
             "hashes": [
