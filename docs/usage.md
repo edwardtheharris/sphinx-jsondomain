@@ -30,35 +30,38 @@ your JSON documents.
       The description is reference-able using the :rst:role:`json:object` role.
       Each property of the JSON document is described using a separate
 
+
+      :property [type] identifier: description
+
+         Documents the property named *identifier*.  The property's type can be
+         specified inline or as a separate ``:proptype:`` option.  The type is
+         shown in the rendered output and linked if the type is something
+         recognizable.  It is also used to generate sample data, if the
+         ``:showexample:`` option is included.
+
+      :proptype identifier: type
+
+         Set's the type of the property named *identifier*.  This is
+         necessary if you are setting the property type to a hyperlinked
+         value (e.g., :rst:role:`json:object` role instance).
+
+      :showexample:
+
+         If this option is specified, then the rendered output will contain
+         a generated example.  The example data is generated using the
+         Python `fake-factory`_ library.  See :ref:`recognized_types` for
+         more details.
+
+      :noindex:
+
+         Do not include this object in the general index.
+
+      :options identifier: option-list
+
+         Options are a comma-separated list of values that are rendered in
+         italics after the property's description.  The extension does not
+         interpret the option values in any way.
 ```
-
-:property [type] identifier: description
-
-   **:property** *[type]* *identifier* **:** *description*
-      Documents the property named *identifier*.  The property's type can be
-      specified inline or as a separate ``:proptype:`` option.  The type is
-      shown in the rendered output and linked if the type is something
-      recognizable.  It is also used to generate sample data, if the
-      ``:showexample:`` option is included.
-
-   **:proptype** *identifier* **:** *type*
-      Set's the type of the property named *identifier*.  This is
-      necessary if you are setting the property type to a hyperlinked
-      value (e.g., :rst:role:`json:object` role instance).
-
-   **:showexample:**
-      If this option is specified, then the rendered output will contain
-      a generated example.  The example data is generated using the
-      Python `fake-factory`_ library.  See :ref:`recognized_types` for
-      more details.
-
-   **:noindex:**
-      Do not include this object in the general index.
-
-   **:options** *identifier* **:** *option-list*
-      Options are a comma-separated list of values that are rendered in
-      italics after the property's description.  The extension does not
-      interpret the option values in any way.
 
 ```{note}
 
