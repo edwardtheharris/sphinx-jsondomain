@@ -38,6 +38,7 @@ setuptools.setup(
     ],
     description='Describe JSON document structures in sphinx',
     install_requires=[
+        'furo',
         'myst_parser',
         'pyyaml',
         'sphinx>=4',
@@ -45,7 +46,7 @@ setuptools.setup(
     license='BSD',
     long_description=long_description(),
     name='sphinx-jsondomain',
-    py_modules=['sphinxjsondomain'],
+    py_modules=['sphinx_jsondomain'],
     url='https://github.com/edwardtheharris/sphinx-jsondomain',
     version=get_version(),
 )

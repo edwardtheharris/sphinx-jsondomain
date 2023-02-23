@@ -9,7 +9,8 @@ from docutils import nodes
 from docutils.parsers.rst import directives as rst_directives
 from sphinx import addnodes
 from sphinx import directives
-from sphinx.domain import Domain
+from sphinx.domains import Domain
+from sphinx.domains import ObjType
 from sphinx import roles
 from sphinx.util import docfields
 from sphinx.util import nodes as node_utils
@@ -203,7 +204,7 @@ class JSONXRef(roles.XRefRole):
         return title, normalize_object_name(target)
 
 
-class JSONDomain(domains.Domain):
+class SphinxJSONDomain(Domain):
     """
     Implementation of the JSON domain.
 
@@ -233,10 +234,10 @@ class JSONDomain(domains.Domain):
     label = 'JSON'
     data_version = 1
     object_types = {
-        'object': domains.ObjType('object', 'object', 'obj'),
+        'object': ObjType('object', 'object', 'obj'),
     }
     directives = {
-        'object': JSONObject,
+        'object': SphinxJSONObject,
     }
     roles = {
         'object': JSONXRef(),
@@ -296,9 +297,9 @@ class JSONDomain(domains.Domain):
             yield (objdef.name, objdef.name, 'object', objdef.docname,
                    objdef.key, 1)
 
-    def merge_domaindata(self, docnames: List[str], otherdata: Dict) -> None:
-        """Merge domain data."""
-        return super().merge_domaindata(docnames, otherdata)
+    # def merge_domaindata(self, docnames: List[str], otherdata: Dict) -> None:
+    #     """Merge domain data."""
+    #     return super().merge_domaindata(docnames, otherdata)
 
     # pylint: disable=too-many-arguments
     def resolve_any_xref(
@@ -555,4 +556,4 @@ def normalize_object_name(obj_name):
 
 def setup(app):
     """Set up the extension in the Sphinx app."""
-    app.add_domain(JSONDomain)
+    app.add_domain(SphinxJSONDomain)
