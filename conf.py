@@ -5,11 +5,16 @@ from pathlib import Path
 
 def get_version():
     """Return current version."""
-    with Path('../version').open('r', encoding='utf-8') as v_fh:
+    with Path('version').open('r', encoding='utf-8') as v_fh:
         f_version = v_fh.read()
     return f_version
 
 
+exclude_patterns = [
+    '**/.pytest_cache/**/*.md',
+    '.pytest_cache/*.md',
+    '.venv/**/*.md',
+]
 # # pylint: disable=redefined-builtin
 # copyright = '2016, Dave Shawley'
 extensions = [
@@ -18,23 +23,18 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx_jsondomain',
 ]
-html_sidebars = {
-    '**': ['about.html', 'navigation.html'], }
-html_static_path = ['_static']
+html_static_path = ['docs/_static']
 html_theme = 'furo'
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None), }
-master_doc = 'index'
+master_doc = 'readme'
 myst_enable_extensions = [
     "amsmath",
-    "attrs_inline",
     "colon_fence",
     "deflist",
     "dollarmath",
     "fieldlist",
     "html_admonition",
     "html_image",
-    "inv_link",
-    "linkify",
     "replacements",
     "smartquotes",
     "strikethrough",
@@ -44,4 +44,7 @@ myst_enable_extensions = [
 needs_sphinx = '4.0'
 project = 'sphinx-jsondomain'
 release = get_version()
+source_suffix = {
+    '.md': 'markdown'
+}
 version = get_version()

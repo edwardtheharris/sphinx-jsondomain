@@ -5,14 +5,12 @@ author: Dave Shawley, Edward Harris
 
 # Sphinx JSON Domain Documentation
 
-```{include} ../readme.md
-```
+Please see the readme for an introduction to the project.
 
 ```{toctree}
 :hidden:
 
-usage
 examples
-../contributing
 history
+usage
 ```
