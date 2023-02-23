@@ -1,5 +1,6 @@
 ---
 abstract: This document provides usage and other information for the Sphinx JSON Domain extension.
+author: Dave Shawley, Edward Harris
 ---
 
 # Sphinx JSON Domain Documentation
@@ -12,6 +13,6 @@ abstract: This document provides usage and other information for the Sphinx JSON
 
 usage
 examples
-contributing
+../contributing
 history
 ```
