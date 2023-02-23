@@ -1,11 +1,17 @@
-Examples
-========
-This page contains additional examples without further elaboration.
+---
+abstract: This page contains additional examples without further elaboration.
+author: Dave Shawley, Edward Harris
+---
+
+# Examples
+
 Each example is preceded by it's ReStructuredText source.
 
------
+---
 
-.. code-block:: rst
+## JSON object directive
+
+```{code-block} rst
 
    .. json:object:: Github Issue
       :showexample:
@@ -32,8 +38,12 @@ Each example is preceded by it's ReStructuredText source.
       :property string body: issue body
       :property user: embedded information about the user that created
       the issue
-   :proptype user: :json:object:`Github User`
+      :proptype user: :json:object:`Github User`
+```
 
+## Another JSON object directive
+
+```{code-block} rst
 .. json:object:: Github Issue
    :showexample:
 
@@ -60,23 +70,11 @@ Each example is preceded by it's ReStructuredText source.
    :property user: embedded information about the user that created
       the issue
    :proptype user: :json:object:`Github User`
+```
 
------
+## JSON Errors
 
-.. code-block:: rst
-
-   .. json:object:: Error
-      :showexample: yaml
-
-      What a normal JSON error body looks like.
-
-      :property string type:
-      :property string title:
-      :property integer status:
-      :property string detail:
-      :property uri instance:
-
-      The semantics of this data type is described in :rfc:`7807`.
+```{code-block} rst
 
 .. json:object:: Error
    :showexample: yaml
@@ -90,22 +88,11 @@ Each example is preceded by it's ReStructuredText source.
    :property uri instance:
 
    The semantics of this data type is described in :rfc:`7807`.
+```
 
------
+## GitHub API JSON objects
 
-.. code-block:: rst
-
-   .. json:object:: Github User
-      :showexample:
-
-      What Github's API thinks a user looks like.
-
-      :property user_name login: the user's unique login
-      :property integer id: Github assigned unique user identifier
-      :property url avatar_url: url to user's selected avatar image
-      :property url gravatar_url: url to the user's gravatar image or
-         the empty string
-
+```{code-block} rst
 .. json:object:: Github User
    :showexample:
 
@@ -116,3 +103,16 @@ Each example is preceded by it's ReStructuredText source.
    :property url avatar_url: url to user's selected avatar image
    :property url gravatar_url: url to the user's gravatar image or
       the empty string
+```
+
+```{eval-rst}
+.. json:object:: Github User
+   :showexample:
+
+   What Github's API thinks a user looks like.
+
+   :property user_name login: the user's unique login
+   :property integer id: Github assigned unique user identifier
+   :property url avatar_url: url to user's selected avatar image
+   :property url gravatar_url: url to the user's gravatar image or the empty string
+```
