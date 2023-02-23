@@ -57,3 +57,11 @@ pipenv shell
    ```rst
    .. json:object:: GitHub
    ```
+
+## Contents
+
+```{toctree}
+
+contributing
+docs/index
+```

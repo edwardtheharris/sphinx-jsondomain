@@ -14,22 +14,33 @@ def get_version():
 # copyright = '2016, Dave Shawley'
 extensions = [
     'myst_parser',
+    'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
-    'sphinxjsondomain',
+    'sphinx_jsondomain',
 ]
 html_sidebars = {
     '**': ['about.html', 'navigation.html'], }
 html_static_path = ['_static']
 html_theme = 'furo'
-html_theme_options = {
-    'description': 'Describe JSON documents',
-    'github_user': 'edwardtheharris',
-    'github_repo': 'sphinx-jsondomain',
-    'extra_nav_links': {
-        'Index': 'genindex.html'},
-}
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None), }
 master_doc = 'index'
+myst_enable_extensions = [
+    "amsmath",
+    "attrs_inline",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "fieldlist",
+    "html_admonition",
+    "html_image",
+    "inv_link",
+    "linkify",
+    "replacements",
+    "smartquotes",
+    "strikethrough",
+    "substitution",
+    "tasklist",
+]
 needs_sphinx = '4.0'
 project = 'sphinx-jsondomain'
 release = get_version()
